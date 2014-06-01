@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<trigers>
+<triger>
+	<interval>30000</interval>
+	<class>com.icitic.omini.offline.triggers.OfflineTranTrigger</class>
+</triger>
+</trigers>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="src/main/resources/com.primeton.btp.icmp.koalcommon.jar"/>
+	<classpathentry kind="lib" path="E:/batch-lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="E:/batch-lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="E:/batch-lib/icbat-run-2.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

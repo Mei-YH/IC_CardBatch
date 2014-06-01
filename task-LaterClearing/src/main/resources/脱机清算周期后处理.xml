@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><task>
+  <name>laterClearing</name>
+  <description>脱机清算周期后处理</description>
+  <creator>lyq</creator>
+  <create-time>2011-10-13 00:00:00.0</create-time>
+  <stage>
+    <description>脱机清算周期后处理初始化</description>
+    <name>laterClearStage</name>
+    <max-retry>0</max-retry>
+    <impl>com.icitic.later.clearing.imp.LaterClearStage</impl>
+    <fault-policy>1</fault-policy>
+    <step>
+      <description>可读卡销卡周期后处理</description>
+      <name>canReadStep</name>
+      <max-retry>0</max-retry>
+      <impl>com.icitic.later.clearing.imp.CanReadDrStep</impl>
+      <packet-size>20</packet-size>
+      <fault-policy>1</fault-policy>
+      <thread-num>1</thread-num>
+    </step>
+    <step>
+      <description>不可读回收卡的脱机清算周期后处理</description>
+      <name>iCanReadStep</name>
+      <max-retry>0</max-retry>
+      <impl>com.icitic.later.clearing.imp.ICanReadReStep</impl>
+      <packet-size>20</packet-size>
+      <fault-policy>1</fault-policy>
+      <thread-num>1</thread-num>
+    </step>
+  </stage>
+<sensor>
+    <cron>0 0 18 * * ? *</cron>
+  </sensor>
+</task>

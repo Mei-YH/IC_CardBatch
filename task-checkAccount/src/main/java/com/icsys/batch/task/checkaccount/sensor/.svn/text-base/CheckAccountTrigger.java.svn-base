@@ -1,0 +1,128 @@
+package com.icitic.artery.task.impl;
+
+import java.io.File;
+
+import org.apache.log4j.Logger;
+import org.jdom.Document;
+import org.jdom.Element;
+
+import com.icitic.omini.BatchDateUtil;
+import com.icitic.omini.SocketClient;
+import com.icitic.omini.XMLHandler;
+import com.icitic.omini.offline.Utils;
+import com.icitic.omini.params.api.NamedParamQuery;
+import com.icitic.omini.task.api.JobContext;
+import com.icitic.omini.task.api.JobException;
+import com.icitic.omini.task.api.Sensor;
+
+public class CheckAccountTrigger implements Sensor {
+	
+	private static Logger LOG = Logger.getLogger(CheckAccountTrigger.class);
+
+
+	public JobContext[] detect(JobContext context) throws JobException {
+		String coreNoticeAddress = (String) context.getAttribute(CheckAccountConstants.CORE_NOTICE_ADDRESS);
+		String localPath=(String)context.getAttribute(CheckAccountConstants.FILE_LOCAL_PATH);
+		int coreNoticePort = Integer.parseInt(context.getAttribute(CheckAccountConstants.CORE_NOTICE_PORT).toString());
+		String tranDate=Utils.getClearDate();
+		String lastDate;
+	
+		try {
+			lastDate = BatchDateUtil.getLastDateWithStringFormat(tranDate);
+			//首先判断当天是否已经对账
+		} catch (Exception e) {
+			LOG.error(e.getMessage(),e);
+			throw new JobException("==========获取系统账务日期失败,任务挂起===========");
+		}
+		File okFile=new File(localPath+"/"+lastDate+"/checkAccount.ok");
+		LOG.info("OKFile:"+okFile);
+		LOG.info(localPath+"/"+lastDate+"/checkAccount.ok");
+		LOG.info(okFile.exists());
+		if(okFile.exists()) {
+			LOG.info("===========当天已对账,任务结束=============");
+			return null;
+		}
+		try {
+			if(notify(context,coreNoticeAddress, coreNoticePort)){
+				JobContext[] result = new JobContext[1];
+				result[0] = context;
+				return result;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOG.error(e.getMessage());
+			LOG.debug("=================核心没有生成文件，探测结束=====================");
+			return null;
+		}
+		return null;
+		
+	}
+	
+	/**
+	 * 发起对账申请
+	 * @param file
+	 * @param coreNotifyProxyHost
+	 * @param coreNotifyProxyPort
+	 * @throws Exception
+	 */
+	private boolean notify(JobContext context,String coreNoticeAddress,int coreNoticePort) throws Exception{
+		
+		SocketClient client = new SocketClient(coreNoticeAddress, coreNoticePort);
+		Document doc = createDoc(context);
+		byte[] sendBuf = XMLHandler.jdomToBytes(doc);
+		byte[] rcvBuf = client.send(sendBuf);
+		if(null == rcvBuf){
+			throw new Exception("通知应答为空!");
+		}
+		try {
+			Document respDoc = XMLHandler.bytesToJdom(rcvBuf);
+			Element response = respDoc.getRootElement();
+			if(null == response)
+				throw new Exception("通知应答为空!");
+			String result = response.getChildText("flags");
+			String totNums=response.getChildText("totNums");
+			String chkFiles=response.getChildText("chkFiles");
+			//核心返回五个0代表核心生成文件
+			if(result.equals("00000")){
+				context.setAttribute(CheckAccountConstants.CORE_FILE_NAME, chkFiles);
+				context.setAttribute(CheckAccountConstants.CORE_FILE_NUM, totNums);
+				//生成通知成功标识文件
+
+				return true;
+			}else{
+				throw new Exception("核心未生成文件!");
+			}
+		
+		} catch (Exception e) {
+			LOG.error(e.getMessage(),e);
+			throw e;
+		}
+	}
+	
+	private Document createDoc(JobContext context) throws Exception{
+		Document doc = new Document();
+		Element root = new Element("coreNotice");
+		doc.addContent(root);
+		String date = NamedParamQuery.getSystemDate();
+		String lastDay = BatchDateUtil.getLastDateWithStringFormat(date);
+		String UUIDPrefix = System.getProperty("UUIDPrefix", "999900000701");
+		String beginUUID = UUIDPrefix+lastDay+"00000001";
+		String endUUID = UUIDPrefix+lastDay+"99999999";
+		addElement(root, "tranCode", "99999");
+		addElement(root, "bankNo", "003");
+		addElement(root, "chkDate", lastDay);
+		addElement(root, "beginUUID", beginUUID);
+		addElement(root, "endUUID", endUUID);
+		return doc;
+	}
+	
+	private void addElement(Element parentEl,String childName,String childText){
+		Element child = new Element(childName);
+		if(childText == null)
+			childText = "";
+		child.setText(childText);
+		parentEl.addContent(child);
+	}
+	
+
+}

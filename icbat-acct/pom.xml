@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.icsys.batch</groupId>
+	<artifactId>icbat-acct</artifactId>
+	<version>2.0</version>
+	<packaging>jar</packaging>
+
+	<name>icbat-acct</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+  	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<encoding>utf-8</encoding>
+				<source>1.5</source>
+				<target>1.5</target>
+			</configuration>
+		</plugin>
+		<plugin>
+           <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
+           <artifactId>maven-svn-revision-number-plugin</artifactId>
+           <version>1.6</version>
+           <executions>
+               <execution>
+                   <goals>
+                       <goal>revision</goal>
+                   </goals>
+               </execution>
+           </executions>
+           <configuration>
+               <entries>
+                   <entry>
+                       <path>${project.basedir}</path>
+                       <prefix>my</prefix>
+                       <depth>infinity</depth>
+                       <reportUnversioned>true</reportUnversioned>
+                       <reportIgnored>false</reportIgnored>
+                       <reportOutOfDate>false</reportOutOfDate>
+                   </entry>
+               </entries>
+           </configuration>
+       </plugin>
+ 
+ 
+       <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-war-plugin</artifactId>
+           <configuration>
+               <archive>
+                   <manifest>
+                       <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                   </manifest>
+                   <manifestEntries>
+                       <Implementation-Build>${my.committedRevision}</Implementation-Build>
+                   </manifestEntries>
+               </archive>
+           </configuration>
+       </plugin>
+ 
+       <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-jar-plugin</artifactId>
+ 
+           <configuration>
+               <archive>
+                   <manifest>
+                       <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                   </manifest>
+                   <manifestEntries>
+                       <Implementation-Build>${my.committedRevision}</Implementation-Build>
+                   </manifestEntries>
+               </archive>
+           </configuration>
+       </plugin>
+  	</plugins>
+  </build>
+  <scm>
+	</scm>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.0</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.icsys.platform</groupId>
+			<artifactId>icsys-util</artifactId>
+			<version>2.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.icsys.platform</groupId>
+			<artifactId>icsys-dao</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.icsys.batch</groupId>
+			<artifactId>icbat-work</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.icsys.batch</groupId>
+			<artifactId>icbat-batch</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+	</dependencies>
+</project>
