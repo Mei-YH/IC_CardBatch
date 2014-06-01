@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<context>
+	<factory class-name="org.osjava.sj.memory.MemoryContextFactory">
+		<property>
+			<name>org.osjava.sj.jndi.shared</name>
+			<value>true</value>
+		</property>
+	</factory>
+	
+		
+	<!-- DataSources -->
+	<resource
+		name="batch-taskctl"
+		type="javax.sql.DataSource"
+		impl="org.apache.commons.dbcp.BasicDataSource"
+		driverClassName="com.ibm.db2.jcc.DB2Driver"
+		url="jdbc:db2://localhost:50000/icmpdb:currentSchema=ICMPDB;"
+		username="db2admin"
+		password="[8AB8EAB85747C5F1B0C76C36CA95C50C]"
+		maxIdle="200"
+		maxWait="5000"
+		maxActive="30"/>
+	<resource
+		name="IC_DATASOURCE"
+		type="javax.sql.DataSource"
+		impl="com.icsys.platform.jdbc.ICPlatformDataSource"
+		className="org.apache.commons.dbcp.BasicDataSource"
+		driverClassName="com.ibm.db2.jcc.DB2Driver"
+		url="jdbc:db2://localhost:50000/icmpdb:currentSchema=ICMPDB;"		
+		username="db2admin"
+		password="[8AB8EAB85747C5F1B0C76C36CA95C50C]"
+		maxIdle="200"
+		maxWait="5000"
+		maxActive="50"/>
+	
+	<!-- Transaction Manager, User Transaction (must be last) -->
+	<resource
+		name="ICplatformTransactionManager"
+		type="javax.transaction.TransactionManager"
+        factory="com.icsys.platform.jdbc.ICPlatformTransactionManager"
+		method="getInstance"
+		managedSource="IC_DATASOURCE"
+		transactionTimeout="60"/>
+	
+</context>
