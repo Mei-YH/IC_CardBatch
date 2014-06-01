@@ -39,7 +39,7 @@ public class TaskSenor {
 			File notic = new File(noticPath,sysdate);
 			notic = new File(notic,"ISDADCF.FCRECDT.PS");
 			if(notic.exists()){				
-				return "发现核心T1结束文件进行日切。";
+				return "发现核心 T1结束文件进行日切。";
 			}
 			return "未发现文件ISDADCF.FCRECDT.PS不能进行日切。";
 		}catch (Exception e) {
