@@ -42,7 +42,6 @@ public class RequestCoreStage implements Stage {
 			String tranDate = SystemParamValue.getSystemDate();
 			context.setJobDate(tranDate);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new JobException("获取系统日期异常！");
 		}
 	}
