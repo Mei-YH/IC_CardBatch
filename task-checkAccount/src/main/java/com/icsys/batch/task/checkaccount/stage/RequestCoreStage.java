@@ -8,7 +8,7 @@ import com.icsys.batch.util.SystemParamValue;
 public class RequestCoreStage implements Stage {
 	
 	public void prepare(JobContext context) throws JobException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method 
 		String coreIp = (String)context.getAttribute("core_ip");
 		String channel = (String)context.getAttribute("channel");
 		String queueName = (String)context.getAttribute("queue_name");
